@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Pacientes</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container">
+        <header>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>🏥 Sistema de Gestión de Pacientes</h1>
+            <p>Clínica San José</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <!-- Info del usuario -->
+            <div style="text-align: right;">
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;" id="user-name"></p>
+                <p style="margin: 0; font-size: 0.8rem; opacity: 0.7;" id="user-role"></p>
+            </div>
+            <!-- Botón logout -->
+            <button onclick="logout()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); border: 2px solid white; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+</header>
+       
+
+        <!-- Formulario para agregar/editar pacientes -->
+        <section class="form-section">
+            <h2 id="form-title">Agregar Nuevo Paciente</h2>
+            
+            <form id="paciente-form">
+                <!-- Campo oculto para el ID (usado al editar) -->
+                <input type="hidden" id="paciente-id">
+                
+                <div class="form-grid">
+                    <!-- Nombre -->
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    
+                    <!-- Apellido -->
+                    <div class="form-group">
+                        <label for="apellido">Apellido *</label>
+                        <input type="text" id="apellido" required>
+                    </div>
+                    
+                    <!-- Edad -->
+                    <div class="form-group">
+                        <label for="edad">Edad *</label>
+                        <input type="number" id="edad" min="0" max="120" required>
+                    </div>
+                    
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono">
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email">
+                    </div>
+                    
+                    <!-- Diagnóstico -->
+                    <div class="form-group full-width">
+                        <label for="diagnostico">Diagnóstico</label>
+                        <textarea id="diagnostico" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Botones del formulario -->
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        Agregar Paciente
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Tabla de pacientes -->
+        <section class="table-section">
+            <div class="table-header">
+                <h2>Lista de Pacientes</h2>
+                <div class="search-box">
+                    <input type="text" id="search" placeholder="Buscar paciente...">
+                </div>
+            </div>
+            
+            <!-- Mensaje de carga -->
+            <div id="loading" class="loading">
+                Cargando pacientes...
+            </div>
+            
+            <!-- Mensaje cuando no hay pacientes -->
+            <div id="empty-message" class="empty-message" style="display: none;">
+                No hay pacientes registrados
+            </div>
+            
+            <!-- Tabla -->
+            <div class="table-container">
+                <table id="pacientes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Edad</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Diagnóstico</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pacientes-tbody">
+                        <!-- Los pacientes se cargan aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+     <script src="/public/js/config.js"></script>
+    <script src="/public/js/auth.js"></script> 
+
+    <!-- Notificaciones (toast) -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Script del frontend -->
+    <script src="/public/js/app.js"></script>
+</body>
+</html>
