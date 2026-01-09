@@ -13,10 +13,11 @@ const API_URL = 'http://localhost:3000/api';
  */
 function showAlert(message, type = 'success') {
     const alert = document.getElementById('alert');
+    if (!alert) return;
+    
     alert.textContent = message;
     alert.className = `alert alert-${type} show`;
     
-    // Ocultar después de 5 segundos
     setTimeout(() => {
         alert.className = 'alert';
     }, 5000);
@@ -29,9 +30,11 @@ function showFieldError(fieldId, message) {
     const input = document.getElementById(fieldId);
     const error = document.getElementById(`${fieldId}-error`);
     
-    input.classList.add('error');
-    error.textContent = message;
-    error.classList.add('show');
+    if (input) input.classList.add('error');
+    if (error) {
+        error.textContent = message;
+        error.classList.add('show');
+    }
 }
 
 /**
@@ -90,11 +93,9 @@ async function handleLogin() {
     try {
         clearFieldErrors();
         
-        // 1. Obtener valores
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         
-        // 2. Validaciones frontend
         let hasError = false;
         
         if (!email) {
@@ -112,12 +113,10 @@ async function handleLogin() {
         
         if (hasError) return;
         
-        // 3. Mostrar loading
         const btn = document.getElementById('login-btn');
         btn.classList.add('loading');
         btn.disabled = true;
         
-        // 4. Hacer petición al backend
         const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: {
@@ -128,21 +127,15 @@ async function handleLogin() {
         
         const data = await response.json();
         
-        // 5. Quitar loading
         btn.classList.remove('loading');
         btn.disabled = false;
         
-        // 6. Manejar respuesta
         if (data.success) {
-            // Guardar token
             saveToken(data.data.token);
-            
-            // Guardar info del usuario
             localStorage.setItem('usuario', JSON.stringify(data.data.usuario));
             
             showAlert('¡Bienvenido! Redirigiendo...', 'success');
             
-            // Redirigir al dashboard después de 1 segundo
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1000);
@@ -168,13 +161,11 @@ async function handleRegister() {
     try {
         clearFieldErrors();
         
-        // 1. Obtener valores
         const nombre = document.getElementById('nombre').value.trim();
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const rol = document.getElementById('rol').value;
         
-        // 2. Validaciones frontend
         let hasError = false;
         
         if (!nombre || nombre.length < 3) {
@@ -200,12 +191,10 @@ async function handleRegister() {
         
         if (hasError) return;
         
-        // 3. Mostrar loading
         const btn = document.getElementById('register-btn');
         btn.classList.add('loading');
         btn.disabled = true;
         
-        // 4. Hacer petición al backend
         const response = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
             headers: {
@@ -216,13 +205,10 @@ async function handleRegister() {
         
         const data = await response.json();
         
-        // 5. Quitar loading
         btn.classList.remove('loading');
         btn.disabled = false;
         
-        // 6. Manejar respuesta
         if (data.success) {
-            // Guardar token (login automático)
             saveToken(data.data.token);
             localStorage.setItem('usuario', JSON.stringify(data.data.usuario));
             
@@ -233,7 +219,6 @@ async function handleRegister() {
             }, 1000);
         } else {
             if (data.errors) {
-                // Mostrar errores de validación del backend
                 data.errors.forEach(err => {
                     const fieldId = err.param || err.path;
                     if (fieldId) {
@@ -263,10 +248,8 @@ async function handleForgotPassword() {
     try {
         clearFieldErrors();
         
-        // 1. Obtener email
         const email = document.getElementById('email').value.trim();
         
-        // 2. Validar
         if (!email) {
             showFieldError('email', 'El email es obligatorio');
             return;
@@ -277,12 +260,10 @@ async function handleForgotPassword() {
             return;
         }
         
-        // 3. Mostrar loading
         const btn = document.getElementById('forgot-btn');
         btn.classList.add('loading');
         btn.disabled = true;
         
-        // 4. Hacer petición
         const response = await fetch(`${API_URL}/auth/forgot-password`, {
             method: 'POST',
             headers: {
@@ -293,15 +274,11 @@ async function handleForgotPassword() {
         
         const data = await response.json();
         
-        // 5. Quitar loading
         btn.classList.remove('loading');
         btn.disabled = false;
         
-        // 6. Mostrar mensaje
         if (data.success) {
             showAlert('Revisa tu email. Te hemos enviado instrucciones para recuperar tu contraseña.', 'success');
-            
-            // Limpiar formulario
             document.getElementById('email').value = '';
         } else {
             showAlert(data.message || 'Error al enviar email', 'error');
@@ -345,14 +322,3 @@ function getCurrentUser() {
     const userStr = localStorage.getItem('usuario');
     return userStr ? JSON.parse(userStr) : null;
 }
-
-// Añadir esto al final de auth.js
-document.addEventListener('DOMContentLoaded', () => {
-    const registerBtn = document.getElementById('register-btn');
-    if (registerBtn) {
-        registerBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Evita que la página se recargue
-            handleRegister();
-        });
-    }
-});

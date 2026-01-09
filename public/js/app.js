@@ -68,7 +68,7 @@ async function fetchWithAuth(url, options = {}) {
 // ==========================================
 
 // URL base de la API
-const API_URL = 'http://localhost:3000/api';
+//const API_URL = 'http://localhost:3000/api';
 
 // Variable para saber si estamos editando
 let isEditing = false;
